@@ -4,17 +4,18 @@
 //   [0, 0, 3, 1, 0, 1, 0],
 //   [0, 1, 2, 0, 1, 0, 0]
 // ]
-const board = [
-  [0, 1, 2, 1, 0, 2, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0]
+let board = [
+  [0, 1, 2, 1, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0]
 ]
 // const board = [[0, 0], [0, 1], [0, 1]]
 let aggregatedGuess = JSON.parse(JSON.stringify(board))
 
 //let aggregatedGuess = [['', '', ''], ['', '', ''], ['', '', '']]
-const mineCount = 0
+let mineCount = 0
 
 const check = () => {
   let boardMineCount = 0
@@ -94,25 +95,16 @@ const constructBoard = () => {
   const boardElement = document.getElementById('board')
 
   boardElement.innerHTML = ''
-  const drawBoard = () => {
-    boardElement.innerHTML = ''
-    board.forEach((line, i) => {
-      line.forEach((cell, j) => {
-        let cellElement = document.createElement('div')
-        cellElement.setAttribute('id', `${i}_${j}`)
-        if (cell) cellElement.innerText = cell
-        else cellElement.innerText = '.'
-        cellElement.classList.add('cell')
-        boardElement.appendChild(cellElement)
-      })
-      boardElement.appendChild(document.createElement('br'))
-    })
-  }
+
   boardElement.addEventListener('click', clicked)
   drawBoard()
 
   const buttonElement = document.getElementById('button')
   buttonElement.addEventListener('click', event => {
+    event.preventDefault()
+    let maxCellsElement = document.getElementById('maxCells')
+    mineCount = maxCellsElement.value
+    console.log(mineCount)
     guess()
     let cellElement
     aggregatedGuess.forEach((row, i) => {
@@ -126,4 +118,37 @@ const constructBoard = () => {
     })
   })
 }
+
+const drawBoard = () => {
+  const boardElement = document.getElementById('board')
+  boardElement.innerHTML = ''
+  board.forEach((line, i) => {
+    line.forEach((cell, j) => {
+      let cellElement = document.createElement('div')
+      cellElement.setAttribute('id', `${i}_${j}`)
+      if (cell) cellElement.innerText = cell
+      else cellElement.innerText = '.'
+      cellElement.classList.add('cell')
+      boardElement.appendChild(cellElement)
+    })
+    boardElement.appendChild(document.createElement('br'))
+  })
+}
+
+const initElement = document.getElementById('initButton')
+initElement.addEventListener('click', event => {
+  event.preventDefault()
+  let rows = document.getElementById('rows').value
+  let cols = document.getElementById('cols').value
+  if (rows <= 0) rows = 5
+  if (cols <= 0) cols = 5
+  board = []
+  for (let i = 0; i < rows; i++) {
+    board.push([])
+    for (let j = 0; j < cols; j++) {
+      board[i].push(0)
+    }
+  }
+  drawBoard()
+})
 constructBoard()
